@@ -1,0 +1,157 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800");
+
+/* Resets */
+
+:root {
+    --font-family: "Open Sans", sans-serif;
+    --width: 900px;
+    --bg: hsl(252, 64%, 11%); 
+    --ocean: hsl(253, 58%, 18%); 
+    --land: hsl(239, 40%, 26%); 
+
+
+    --blue1: hsl(220, 100%, 30%); 
+    --blue2: hsl(220, 50%, 50%); 
+    --blue3: hsl(220, 50%, 66%); 
+    --blue4: hsl(220, 50%, 80%); 
+    --blue5: hsl(220, 50%, 90%); 
+    --green1: hsl(175, 100%, 30%);  
+    --green2: hsl(175, 50%, 50%); 
+    --green3: hsl(175, 50%, 66%); 
+    --green4: hsl(175, 50%, 80%);
+    --green5: hsl(175, 50%, 90%); 
+    --yellow: hsl(40, 80%, 60%); 
+    --red1: hsl(360, 70%, 50%); 
+    --red2: hsl(360, 60%, 60%); 
+    --red3: hsl(360, 60%, 75%); 
+    --red4: hsl(360, 60%, 85%); 
+    --red5: hsl(360, 60%, 90%); 
+    --unBlue1: hsl(210, 70%, 50%); 
+    --unBlue2: hsl(210, 70%, 66%); 
+    --unBlue3: hsl(210, 70%, 77%); 
+    --unBlue4: hsl(210, 70%, 88%); 
+    --unBlue5: hsl(210, 70%, 97%); 
+    --gray1: hsl(0, 0%, 30%); 
+    --gray2: hsl(0, 0%, 40%); 
+    --gray3: hsl(0, 0%, 60%); 
+    --gray4: hsl(0, 0%, 80%); 
+    --gray5: hsl(0, 0%, 95%); 
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+}
+
+strong {
+    font-weight: 700;
+}
+
+emph {
+    font-style: italic;
+}
+
+h1 {
+    margin: 1rem 0;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: .8rem;
+    font-size: 0.6rem;
+    font-size: clamp(0.6rem, 0.4rem + 0.67vw, 0.8rem);
+    margin: 1rem;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    max-width: var(--width);
+}
+
+/* Panel */
+
+.panel {
+    position: relative;
+    background-color: var(--bg);
+}
+
+.svg-panel {
+    width: 100%;
+    height: auto;
+}
+
+/* Tabs */
+
+& .tabs {
+    display: flex;
+    gap: 1em;
+
+    & .tab {
+        background: var(--unBlue2);
+        color: var(--unBlue5);
+        padding: .25em .5em;
+        border-radius: 2px;
+        opacity: .8;
+        transition: 
+            opacity .1s ease-in, 
+            background .1s ease-in;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &.active {
+            background: var(--blue1);
+            color: var(--unBlue5);
+        }
+    }
+}
+
+/* Map styling */
+
+.globe {
+    fill: var(--ocean);
+    stroke: none;
+    stroke-width: 0px;
+}
+
+.border {
+    fill: var(--land);
+    stroke: none;
+}
+
+.dot {
+    fill: var(--yellow);
+    filter: drop-shadow(0 0 .2em white);
+    opacity: .25;
+    transition: opacity .5s linear;
+
+    &.flash {
+        opacity: 1;
+    }
+
+    &.hide {
+        opacity: 0;
+    }
+}
+
+.link {
+    fill: none;
+    stroke: var(--yellow);
+    stroke-width: 1px;
+    opacity: 0;
+    transition: opacity 3s linear;
+
+    &.flash {
+        opacity: .7;
+    }
+}
+
