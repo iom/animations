@@ -1,13 +1,15 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800");
+@import url('https://fonts.googleapis.com/css2?family=Mystery+Quest&display=swap');
 
 /* Resets */
 
 :root {
     --font-family: "Open Sans", sans-serif;
-    --width: 900px;
-    --bg: hsl(252, 64%, 11%); 
-    --ocean: hsl(253, 58%, 18%); 
-    --land: hsl(239, 40%, 26%); 
+    --width: 1280px;
+    --bg: hsl(252, 50%, 11%); 
+    --bg-light: hsl(252, 40%, 25%); 
+    --ocean: hsl(255, 38%, 8%); 
+    --land: hsl(240, 34%, 13%); 
 
 
     --blue1: hsl(220, 100%, 30%); 
@@ -20,7 +22,8 @@
     --green3: hsl(175, 50%, 66%); 
     --green4: hsl(175, 50%, 80%);
     --green5: hsl(175, 50%, 90%); 
-    --yellow: hsl(40, 80%, 60%); 
+    --yellow1: hsl(40, 80%, 60%); 
+    --yellow: hsl(40, 100%, 70%); 
     --red1: hsl(360, 70%, 50%); 
     --red2: hsl(360, 60%, 60%); 
     --red3: hsl(360, 60%, 75%); 
@@ -68,6 +71,11 @@ body {
     margin: 1rem;
 }
 
+.title {
+    font-family: "Mystery Quest";
+    font-size: 3em;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -79,19 +87,32 @@ body {
 
 .panel {
     position: relative;
-    background-color: var(--bg);
 }
 
 .svg-panel {
+    display: block;
     width: 100%;
     height: auto;
 }
+
+.description {
+
+    & > * {
+        display: none;
+    }
+
+    & .show {
+        display: block;
+    }
+}
+
+
 
 /* Tabs */
 
 & .tabs {
     display: flex;
-    gap: 1em;
+    gap: .5em;
 
     & .tab {
         background: var(--unBlue2);
@@ -115,43 +136,72 @@ body {
     }
 }
 
-/* Map styling */
+/* Animation stylings **************************/
 
-.globe {
-    fill: var(--ocean);
-    stroke: none;
-    stroke-width: 0px;
-}
+/* Bubbles */
 
-.border {
-    fill: var(--land);
-    stroke: none;
-}
+.panel-bubbles {
 
-.dot {
-    fill: var(--yellow);
-    filter: drop-shadow(0 0 .2em white);
-    opacity: .25;
-    transition: opacity .5s linear;
 
-    &.flash {
-        opacity: 1;
+    &.panel{
+        background: radial-gradient(var(--bg-light), var(--bg));
     }
 
-    &.hide {
+    & .border {
+        fill: var(--land);
+        stroke: none;
+    }
+
+    & .pie-slice {
+        filter: inset drop-shadow(0 0 .5em white);
+    }
+
+}
+/* Globe */
+
+.panel-globe {
+
+    &.panel{
+        background: radial-gradient(var(--bg-light), var(--bg));
+    }
+
+    & .globe {
+        fill: var(--ocean);
+        stroke: none;
+        stroke-width: 0px;
+    }
+    
+    & .border {
+        fill: var(--land);
+        stroke: none;
+    }
+    
+    & .dot {
+        fill: var(--yellow);
+        filter: drop-shadow(0 0 .2em white);
+        opacity: .25;
+        transition: opacity .5s linear;
+    
+        &.flash {
+            opacity: 1;
+        }
+    
+        &.hide {
+            opacity: 0;
+        }
+    }
+    
+    & .link {
+        fill: none;
         opacity: 0;
-    }
-}
-
-.link {
-    fill: none;
-    stroke: var(--yellow);
-    stroke-width: 1px;
-    opacity: 0;
-    transition: opacity 3s linear;
-
-    &.flash {
-        opacity: .7;
+        stroke: var(--yellow);
+        stroke-width: 1px;
+        transition: 
+            opacity 3s linear;
+        
+        &.flash {
+            opacity: 1;
+        }
     }
 }
 

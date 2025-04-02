@@ -1,6 +1,7 @@
 import { renderGlobe } from "./globe.js";
+import { renderBubbles } from "./bubbles.js";
 
-let panelSelect = "globe";
+let panelSelect = "bubbles";
 
 d3.selectAll(".tab")
     .on("click", switchPanel)
@@ -16,7 +17,9 @@ render(panelSelect);
 
 function render(panel) {
 
-    if (panel == "globe") {
+    if (panel == "bubbles") {
+        renderBubbles()
+    } else if (panel == "globe") {
         renderGlobe()
     }
 
