@@ -48,7 +48,7 @@ function drawGlobe(map, dotsData, linksData) {
 
     const container = d3.select(".panel");
     container.selectAll("*").remove();
-    container.classed("panel-globe", true);
+    container.attr("class", "panel panel-globe");
 
     d3.selectAll(".description > *").classed("show", false);
     d3.select(".description .panel-globe").classed("show", true);

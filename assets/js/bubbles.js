@@ -29,7 +29,7 @@ function drawMap(map, nodes) {
 
     const container = d3.select(".panel");
     container.selectAll("*").remove();
-    container.classed("panel-bubbles", true);
+    container.attr("class", "panel panel-bubbles");
 
     d3.selectAll(".description > *").classed("show", false);
     d3.select(".description .panel-bubbles").classed("show", true);
@@ -39,27 +39,26 @@ function drawMap(map, nodes) {
     const panelSVG = container.append("svg")
         .attr("class", "svg-panel")
         .attr("width", "100%")
-        .attr("preserveAspectRatio", "xMinYMax slice")
         .attr("viewBox", [0, 0, util.dim.width, util.dim.height]);
 
     // Map
 
-    let projection = d3.geoEquirectangular()
+    const projection = d3.geoEquirectangular()
         .scale(300)
-        .center([0,10])
+        .center([0, 10])
         .translate([util.dim.width / 2, util.dim.height / 2]);
 
-    let path = d3.geoPath().projection(projection);
+    const path = d3.geoPath().projection(projection);
 
     const mapSVG = panelSVG.append("g");
 
-    const countries = mapSVG.append("g")
+    mapSVG.append("g")
         .attr("class", "borders")
-        .selectAll("country")
+        .selectAll("land")
         .data(map)
         .join("path")
         .attr("class", "border")
-        .attr("d", path)
+        .attr("d", path);
 
     // Nodes
 
@@ -82,6 +81,49 @@ function drawMap(map, nodes) {
 
     mapSVG.call(zoom);
 
+    // Data
+
+    let yearMin = 2023
+    let yearMax = 2024
+
+    let dataIndicator = nodes.filter(d => 
+        d.t >= yearMin && 
+        d.t <= yearMax && 
+        d.n >= nRange.min && 
+        d.var == 1
+    );
+
+    let data = nodes.filter(d => 
+        d.t >= yearMin && 
+        d.t <= yearMax && 
+        d.n >= nRange.min && 
+        d.var == 1
+    );
+
+    let colorScaler = d3.scaleLinear()
+        .domain([
+            d3.min(dataIndicator, d => d.v_fill), 
+            d3.mean(dataIndicator, d => d.v_fill), 
+            d3.max(dataIndicator, d => d.v_fill)
+        ])
+        .range([util.colors.yellow, util.colors.green1, util.colors.blue1]);
+
+    const groupData = group.selectAll("g")
+        .attr("class", "node-container")
+        .data(data, d => d.t + "-" + d.type + "-" + d.coords[0] + "-" + d.coords[1])
+        .order()
+        .join("g")
+        .attr("transform", d => `translate(${ projection(d.coords)[0] }, ${ projection(d.coords)[1] })`);
+    
+    groupData.append("circle")
+        .attr("id", d => d.geo + "-" + d.t + "-" + d.type + "-" + d.coords[0] + "-" + d.coords[1])
+        .attr("class", "node")
+        .attr("r", d => rScaler(d.n) / Math.sqrt(currentTransform.k))
+        .attr("fill-opacity", .3)
+        .attr("stroke-opacity", .3)
+        .style("fill", d => colorScaler(d.v))
+        .style("stroke-width", .75 / currentTransform.k);
+    
     // Animation ////////////////////////////////
 
     const time = { in: 8000, pause: 2000, trans: 1000 };
@@ -106,6 +148,8 @@ function drawMap(map, nodes) {
     function animateSequence(index = 0) {
 
         if (index >= zoomPoints.length) return;
+
+        console.log("Dog")
     
         const [x, y, z] = zoomPoints[index];
         zoomToPoint(x, y, z);
@@ -137,8 +181,11 @@ function drawMap(map, nodes) {
 
         const width = 200, height = 200, radius = Math.min(width, height) / 2;
     
-        const container = panelSVG.append("g")
-            .attr("transform", `translate(${ +position[0] }, ${ +position[1] })`);
+        const id = Math.floor(d3.randomUniform(1, 99)()); 
+
+        const pieContainer = panelSVG.append("g")
+            .attr("id", "pie-" + id)
+            .attr("transform", `translate(${ position[0] }, ${ position[1] })`);
     
         const color = d3.scaleOrdinal()
             .domain([0, 1, 2, 3, 4])
@@ -153,7 +200,7 @@ function drawMap(map, nodes) {
         const pie = d3.pie().value(d => d);
         const arc = d3.arc().innerRadius(radius / 2).outerRadius(radius);
     
-        container.selectAll("path")
+        pieContainer.selectAll("path")
             .data(pie(data))
             .enter()
             .append("path")
@@ -167,11 +214,14 @@ function drawMap(map, nodes) {
                 .attr("fill", (d, i) => color(i))
                 .style("opacity", .35)
         
-        container.selectAll("path")
+        pieContainer.selectAll("path")
             .transition()
             .delay(1.2 * time.in + time.pause)
             .duration(time.trans)
             .style("opacity", 0)
+            .on("end", () => d3.select("#pie-" + id).remove());
+
+        console.log("Cat")
     }
 
     // function zoomOut() {
@@ -180,53 +230,50 @@ function drawMap(map, nodes) {
     //         .call(zoom.transform, d3.zoomIdentity);
     // }
     
-    function update() {
+    // function update() {
 
-        d3.selectAll(".node-container").remove();
+    //     d3.selectAll(".node-container").remove();
 
-        let yearMin = 2023
-        let yearMax = 2024
+    //     let yearMin = 2023
+    //     let yearMax = 2024
 
-        let dataIndicator = nodes.filter(d => 
-            d.t >= yearMin && 
-            d.t <= yearMax && 
-            d.n >= nRange.min && 
-            d.var == 1
-        );
+    //     let dataIndicator = nodes.filter(d => 
+    //         d.t >= yearMin && 
+    //         d.t <= yearMax && 
+    //         d.n >= nRange.min && 
+    //         d.var == 1
+    //     );
 
-        let data = nodes.filter(d => 
-            d.t >= yearMin && 
-            d.t <= yearMax && 
-            d.n >= nRange.min && 
-            d.var == 1
-        );
+    //     let data = nodes.filter(d => 
+    //         d.t >= yearMin && 
+    //         d.t <= yearMax && 
+    //         d.n >= nRange.min && 
+    //         d.var == 1
+    //     );
 
-        let colorScaler = d3.scaleLinear()
-            .domain([
-                d3.min(dataIndicator, d => d.v_fill), 
-                d3.mean(dataIndicator, d => d.v_fill), 
-                d3.max(dataIndicator, d => d.v_fill)
-            ])
-            .range([util.colors.yellow, util.colors.green1, util.colors.blue1]);
+    //     let colorScaler = d3.scaleLinear()
+    //         .domain([
+    //             d3.min(dataIndicator, d => d.v_fill), 
+    //             d3.mean(dataIndicator, d => d.v_fill), 
+    //             d3.max(dataIndicator, d => d.v_fill)
+    //         ])
+    //         .range([util.colors.yellow, util.colors.green1, util.colors.blue1]);
 
-        const groupData = group.selectAll("g")
-            .attr("class", "node-container")
-            .data(data, d => d.t + "-" + d.type + "-" + d.coords[0] + "-" + d.coords[1])
-            .order()
-            .join("g")
-            .attr("transform", d => `translate(${ projection(d.coords)[0] }, ${ projection(d.coords)[1] })`);
+    //     const groupData = group.selectAll("g")
+    //         .attr("class", "node-container")
+    //         .data(data, d => d.t + "-" + d.type + "-" + d.coords[0] + "-" + d.coords[1])
+    //         .order()
+    //         .join("g")
+    //         .attr("transform", d => `translate(${ projection(d.coords)[0] }, ${ projection(d.coords)[1] })`);
         
-        groupData.selectAll("circle").remove();
-        groupData.append("circle")
-            .attr("id", d => d.geo + "-" + d.t + "-" + d.type + "-" + d.coords[0] + "-" + d.coords[1])
-            .attr("class", "node")
-            .attr("r", d => rScaler(d.n) / Math.sqrt(currentTransform.k))
-            .attr("fill-opacity", .3)
-            .attr("stroke-opacity", .3)
-            .style("fill", d => colorScaler(d.v))
-            .style("stroke-width", .75 / currentTransform.k);
-
-    };
-
-    update();
+    //     groupData.selectAll("circle").remove();
+    //     groupData.append("circle")
+    //         .attr("id", d => d.geo + "-" + d.t + "-" + d.type + "-" + d.coords[0] + "-" + d.coords[1])
+    //         .attr("class", "node")
+    //         .attr("r", d => rScaler(d.n) / Math.sqrt(currentTransform.k))
+    //         .attr("fill-opacity", .3)
+    //         .attr("stroke-opacity", .3)
+    //         .style("fill", d => colorScaler(d.v))
+    //         .style("stroke-width", .75 / currentTransform.k);
+    // };
 }
