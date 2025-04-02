@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devlab</title>
+    <title>Animations</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="assets/js/topojson.min.js"></script>
     <link rel="stylesheet" href="./assets/style.css">
@@ -13,16 +13,20 @@
 
     <main>
 
+        <h1 class="title">Animations</h1>
+
         <section class="container">
 
             <div class="tabs">
-                <div class="tab" panel="A">Globe</div>
-                <div class="tab" panel="B">Globe</div>
+                <div class="tab active" panel="bubbles">Bubbles</div>
                 <div class="tab" panel="globe">Globe</div>
             </div>
 
-            <div class="panel">
+            <div class="panel"></div>
 
+            <div class="description">
+                <p class="panel-bubbles">Map with bubbles zooms in to various points and a pie chart fades into view.</p>
+                <p class="panel-globe">Spinning globe with flashing dots and connections.</p>
             </div>
 
 
